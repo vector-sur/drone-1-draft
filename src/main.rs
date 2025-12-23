@@ -13,16 +13,13 @@ fn main() {
     let distance = get_distance(from, to);
     let direction = Haversine.bearing(from, to);
 
-    println!("=== POSICIÓN ===");
     println!("From: {:#?}", from);
     println!("To: {:#?}", to);
-    
-    println!("\n=== DISTANCIA ===");
+
     println!("One way distance: {distance} [m]");
     println!("One way distance: {} [km]", distance / 1000.0);
     println!("Round trip distance: {} [m]", distance * 2.0);
     println!("Round trip distance: {} [km]", distance * 2.0 / 1000.0);
     
-    println!("\n=== DIRECCIÓN ===");
-    println!("Vector de dirección: {:#?}°", direction);
+    println!("Direction: {:#?}°", direction);
 }
