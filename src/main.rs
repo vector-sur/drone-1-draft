@@ -7,19 +7,36 @@ use geo::prelude::*;
 use geo::{Point, Haversine};
 
 fn main() {
+    //system_init();
     let from = dron_gps::get_position(); 
-    let to = Point::new(-34.9042261, -57.9275761);
+    let to = Point::new(-34.9042261, -57.9275761); // to is actually get from the web interface
     
     let distance = get_distance(from, to);
     let direction = Haversine.bearing(from, to);
 
-    println!("From: {:#?}", from);
-    println!("To: {:#?}", to);
+    start_trip(from, to, distance, direction); // check everighti and start trip (up 100m)
 
-    println!("One way distance: {distance} [m]");
-    println!("One way distance: {} [km]", distance / 1000.0);
-    println!("Round trip distance: {} [m]", distance * 2.0);
-    println!("Round trip distance: {} [km]", distance * 2.0 / 1000.0);
+    let actual_position = dron_gps::get_position();
+
+    // trip to go
+    while verify_distance(actual_position, to) > 1.0 {
+        verify_height();
+        verify_direction();
+        move_forward();
+        actual_position = dron_gps::get_position();
+    }
+
+    land();
     
-    println!("Direction: {:#?}°", direction);
+    // trip to come back
+    while verify_distance(actual_position, from) > 1.0 {
+        verify_height();
+        verify_direction();
+        move_forward();
+        actual_position = dron_gps::get_position();
+    }
+
+    land();
+    end_trip();
 }
+
